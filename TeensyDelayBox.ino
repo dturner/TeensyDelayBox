@@ -10,6 +10,10 @@
  * 
  * Based on code also from: https://forum.pjrc.com/threads/29276-Limits-of-delay-effect-in-audio-library/page3
  * 
+ * TODO: 
+ * 
+ * - Add scale down and scale up circuit on ns1 
+ * 
  */
 
 #include <Audio.h>
@@ -18,37 +22,35 @@
 #include <SD.h>
 #include <SerialFlash.h>
 
-AudioSynthWaveformSine     sine;
-AudioEffectEnvelope        env;
-AudioEffectDelayExternal   dly(AUDIO_MEMORY_MEMORYBOARD);
-AudioMixer4                mix;
-AudioOutputI2S             headphones;
+// GUItool: begin automatically generated code
+AudioInputI2S            audioIn;           //xy=132,452
+AudioEffectDelayExternal delayNode(AUDIO_MEMORY_MEMORYBOARD);      //xy=416,282
+AudioMixer4              mixer1;         //xy=660,670
+AudioOutputI2S           audioOut;           //xy=722,496
+AudioConnection          patchCord1(audioIn, 0, delayNode, 0);
+AudioConnection          patchCord2(audioIn, 0, mixer1, 0);
+AudioConnection          patchCord3(audioIn, 1, audioOut, 1);
+AudioConnection          patchCord4(delayNode, 0, mixer1, 1);
+AudioConnection          patchCord5(mixer1, 0, audioOut, 0);
+AudioControlSGTL5000     audioShield;    //xy=965,601
+// GUItool: end automatically generated code
 
-AudioConnection            patchCord1(sine, env);
-AudioConnection            patchCord2(env, dly);
-AudioConnection            patchCord3(dly, 0, mix, 0);
-AudioConnection            patchCord4(dly, 1, mix, 1);
-AudioConnection            patchCord5(env, 0, headphones, 0);
-AudioConnection            patchCord6(mix, 0, headphones, 1);
-AudioControlSGTL5000       audioShield;
 
 void setup() {
-        
-        AudioMemory(10);
-        audioShield.enable();
-        audioShield.volume(0.3);
-        sine.amplitude(0.9);
-        sine.frequency(800);
-        dly.delay(0, 500);
-        dly.delay(1, 1500);
+
+  AudioMemory(10);
+  audioShield.enable();
+  audioShield.volume(0.4);
+  audioShield.inputSelect(AUDIO_INPUT_LINEIN);
+
+  // Set the input and output voltage ranges
+  //audioShield.lineInLevel(0); 
+  //audioShield.lineOutLevel(13); 
+  
+  delayNode.delay(0, 500);
+
 }
 
 void loop() {
-        env.noteOn();
-        delay(450);
-        env.noteOff();
-        delay(2000);
-        Serial.print("CPU: ");
-        Serial.println(AudioProcessorUsageMax());
-        AudioProcessorUsageMaxReset();
+  
 }

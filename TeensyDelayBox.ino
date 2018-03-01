@@ -44,8 +44,8 @@ void setup() {
   audioShield.inputSelect(AUDIO_INPUT_LINEIN);
 
   // Set the input and output voltage ranges
-  //audioShield.lineInLevel(0); 
-  //audioShield.lineOutLevel(13); 
+  audioShield.lineInLevel(0); 
+  audioShield.lineOutLevel(13); 
   
   delayNode.delay(0, 500);
 

@@ -12,6 +12,8 @@
  * 
  * Circuit: 
  * 
+ * - Line in connected to left line in on audio shield
+ * - Line out connected to left line out on audio shield
  * - 3 pots (10kΩ) are used to control the delay time, feedback amount and wet/dry mix. These should each be wired as follows: 
  * 
  * - Top pin: 3.3V
@@ -30,7 +32,7 @@
 #include <SD.h>
 #include <SerialFlash.h>
 
-#define USE_MEMORYBOARD 0
+//#define USE_MEMORYBOARD
 
 // GUItool: begin automatically generated code
 AudioInputI2S            audioIn;        //xy=286,488
@@ -63,7 +65,13 @@ ResponsiveAnalogRead wetDryPin(WET_DRY_MIX_PIN, true);
 void setup() {
 
   Serial.println("Teensy Delay Box");
+#ifdef USE_MEMORYBOARD
   AudioMemory(10);
+#else
+  // We need to allocate much more internal memory for the delay
+  AudioMemory(200);
+#endif
+  
   audioShield.enable();
   audioShield.volume(0.4);
   audioShield.inputSelect(AUDIO_INPUT_LINEIN);

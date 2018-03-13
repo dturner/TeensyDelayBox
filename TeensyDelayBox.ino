@@ -3,8 +3,8 @@
  * 
  * Requirements: 
  * - Teensy 3.1/3.2
- * - Memory board add-on (Note: this uses Analog input 0 (pin 14) for SCK, so if you try to use this for something else the memory board will stop working)
  * - Audio shield add-on
+ * - Optional: Memory board add-on from https://github.com/FrankBoesing/memoryboard. Note: this uses Analog input 0 (pin 14) for SCK, so if you try to use this for something else the memory board will stop working)
  * 
  * Verify that teensy and shields are connected the right way round, see images here: https://forum.pjrc.com/threads/29276-Limits-of-delay-effect-in-audio-library/page3
  * 
@@ -12,14 +12,14 @@
  * 
  * Circuit: 
  * 
- * - 3 pots (10kΩ) are used to control the delay time, feedback amount and wet/dry mix. These should be wired as follows: 
+ * - 3 pots (10kΩ) are used to control the delay time, feedback amount and wet/dry mix. These should each be wired as follows: 
  * 
  * - Top pin: 3.3V
  * - Wiper: to analog pin (A1, A2 or A3)
  * - Bottom pin: GND
  * 
  * - To smooth the signal from the pot place a 0.1uF cap between the analog pin and GND. 
- * - The software library ResponsiveAnalogRead (https://github.com/dxinteractive/ResponsiveAnalogRead) is also used (and can be installed from Arduino Library manager)
+ * - The software library ResponsiveAnalogRead (https://github.com/dxinteractive/ResponsiveAnalogRead) is also used to smooth the signal and can be installed from Arduino Library manager.
  * 
  */
 

@@ -12,9 +12,7 @@
  * 
  * TODO: 
  * 
- * - Wet/dry mix doesn't work
- * - Add scale down and scale up circuit on ns1 
- * 
+ * - have feedback amount change input gain as well (how should this work?)
  */
 
 #include <ResponsiveAnalogRead.h> // https://github.com/dxinteractive/ResponsiveAnalogRead
@@ -42,7 +40,7 @@ AudioConnection          patchCord1(audioIn, 0, delayInputMixer, 0);
 AudioConnection          patchCord2(audioIn, 0, wetDryMixer, 0);
 AudioConnection          patchCord3(delayInputMixer, delayNode);
 AudioConnection          patchCord4(delayNode, 0, wetDryMixer, 1);
-//AudioConnection          patchCord5(delayNode, 0, delayInputMixer, 1);
+AudioConnection          patchCord5(delayNode, 0, delayInputMixer, 1);
 AudioConnection          patchCord6(wetDryMixer, 0, audioOut, 0);
 AudioControlSGTL5000     audioShield;    //xy=1177,670
 // GUItool: end automatically generated code
@@ -52,6 +50,7 @@ AudioControlSGTL5000     audioShield;    //xy=1177,670
 #define WET_DRY_MIX_PIN A1
 
 ResponsiveAnalogRead delayPin(DELAY_TIME_PIN, true);
+ResponsiveAnalogRead feedbackPin(FEEDBACK_PIN, true);
 ResponsiveAnalogRead wetDryPin(WET_DRY_MIX_PIN, true);
 
 void setup() {
@@ -67,7 +66,7 @@ void setup() {
   //audioShield.lineOutLevel(13); 
 
   // Set input gain
-  //delayInputMixer.gain(0, 1.0);
+  delayInputMixer.gain(0, 0.7);
 
   // Set feedback amount
   //delayInputMixer.gain(1, 0);
@@ -84,6 +83,7 @@ void setup() {
 void loop() {
 
   delayPin.update(); 
+  feedbackPin.update();
   wetDryPin.update();
   
   if (delayPin.hasChanged()){
@@ -94,14 +94,14 @@ void loop() {
     Serial.println(delayMillis);
   }
 
-  // Set the feedback amount (allowing for feedback > 100%)
-  /*
-  float feedbackAmount = (float) analogRead(A1) / 512.0f;
-  delayInputMixer.gain(1, feedbackAmount);
-  Serial.print("Feedback ");
-  Serial.println(feedbackAmount);
+  if (feedbackPin.hasChanged()){
+    // Set the feedback amount (allowing for feedback > 100%)
+    float feedbackAmount = (float) feedbackPin.getValue() / 512.0f;
+    delayInputMixer.gain(1, feedbackAmount);
+    Serial.print("Feedback ");
+    Serial.println(feedbackAmount);
+  }
 
-  */
   if (wetDryPin.hasChanged()){
     float wetAmount = (float) wetDryPin.getValue() / 1023.0f; 
     if (wetAmount > 1) wetAmount = 1;  

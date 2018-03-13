@@ -10,20 +10,27 @@
  * 
  * Based on code also from: https://forum.pjrc.com/threads/29276-Limits-of-delay-effect-in-audio-library/page3
  * 
- * TODO: 
+ * Circuit: 
  * 
- * - have feedback amount change input gain as well (how should this work?)
+ * - 3 pots (10kΩ) are used to control the delay time, feedback amount and wet/dry mix. These should be wired as follows: 
+ * 
+ * - Top pin: 3.3V
+ * - Wiper: to analog pin (A1, A2 or A3)
+ * - Bottom pin: GND
+ * 
+ * - To smooth the signal from the pot place a 0.1uF cap between the analog pin and GND. 
+ * - The software library ResponsiveAnalogRead (https://github.com/dxinteractive/ResponsiveAnalogRead) is also used (and can be installed from Arduino Library manager)
+ * 
  */
 
-#include <ResponsiveAnalogRead.h> // https://github.com/dxinteractive/ResponsiveAnalogRead
+#include <ResponsiveAnalogRead.h> 
 #include <Audio.h>
 #include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
 
-#define USE_MEMORYBOARD 1
-
+#define USE_MEMORYBOARD 0
 
 // GUItool: begin automatically generated code
 AudioInputI2S            audioIn;        //xy=286,488
@@ -61,10 +68,6 @@ void setup() {
   audioShield.volume(0.4);
   audioShield.inputSelect(AUDIO_INPUT_LINEIN);
 
-  // Set the input and output voltage ranges
-  //audioShield.lineInLevel(0); 
-  //audioShield.lineOutLevel(13); 
-
   // Set input gain
   delayInputMixer.gain(0, 0.7);
 
@@ -77,7 +80,6 @@ void setup() {
   // Set wet/dry amount to 50%
   wetDryMixer.gain(0, 0.5);
   wetDryMixer.gain(1, 0.5);
-
 }
 
 void loop() {

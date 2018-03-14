@@ -73,8 +73,10 @@ void setup() {
 #endif
   
   audioShield.enable();
-  audioShield.volume(0.4);
+  audioShield.volume(0.8);
   audioShield.inputSelect(AUDIO_INPUT_LINEIN);
+  audioShield.lineInLevel(0); // 0: 3.12Vpp
+  audioShield.lineOutLevel(13); // 13: 3.16Vpp
 
   // Set input gain
   delayInputMixer.gain(0, 0.7);
